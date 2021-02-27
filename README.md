@@ -13,7 +13,6 @@ Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitorin
   * Run `sensors-detect`
   * Made any [necessary adjustments](https://hwmon.wiki.kernel.org/faq) to the [configuration](https://linux.die.net/man/5/sensors3.conf) in `/etc/sensors3.conf`, using `/etc/sensors.d/*`
 * `go get github.com/mt-inside/go-lmsensors`
-  * TODO
 
 ## How it works
 This package links against the C-language `libsensors` and calls it to get sensor readings from the hwmon kernel subsystem (which it reads from sysfs).
@@ -64,10 +63,3 @@ it8792-isa-0a60
   [Temp] System2: 34.000000
 ...
 ```
-
-
-
-How to get on godoc?
-* link to it
-licence
-
