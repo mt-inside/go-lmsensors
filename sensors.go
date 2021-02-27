@@ -57,7 +57,7 @@ type Sensors struct {
 }
 
 type Chip struct {
-	Id      string
+	ID      string
 	Type    string
 	Bus     string
 	Address string
@@ -94,7 +94,7 @@ func Get() (*Sensors, error) {
 		panic("Can't configure libsensors")
 	}
 
-	sensors := &Sensors{Chips: make(map[string]*Chip, 0)}
+	sensors := &Sensors{Chips: make(map[string]*Chip)}
 
 	var chipno C.int = 0
 	for {
@@ -110,15 +110,15 @@ func Get() (*Sensors, error) {
 
 		adaptor := C.GoString(C.sensors_get_adapter_name(&cchip.bus))
 
-		chip := &Chip{Id: chipName, Adapter: adaptor, Readings: make(map[string]Reading)}
+		chip := &Chip{ID: chipName, Adapter: adaptor, Readings: make(map[string]Reading)}
 		ords := strings.Split(chipName, "-")
 		chip.Type = ords[0]
 		chip.Bus = ords[1]
 		chip.Address = ords[2]
 
-		feature_nr := C.int(0)
+		i := C.int(0)
 		for {
-			feature := C.sensors_get_features(cchip, &feature_nr)
+			feature := C.sensors_get_features(cchip, &i)
 			if feature == nil {
 				break
 			}
