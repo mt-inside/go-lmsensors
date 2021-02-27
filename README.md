@@ -7,7 +7,7 @@ Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitorin
 
 ## Setup
 * Install _lm-sensors_
-  * Ubuntu: `sudo apt install lm-sensors`
+  * Ubuntu: `sudo apt install lm-sensors libsensors-dev`
   * Arch: `pacman -S lm_sensors`
 * Configure _lm-sensors_
   * Run `sensors-detect`
