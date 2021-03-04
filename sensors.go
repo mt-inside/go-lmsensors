@@ -78,6 +78,13 @@ type Reading struct {
 	TempType TempType
 }
 
+func init() {
+	cerr := C.sensors_init(nil)
+	if cerr != 0 {
+		panic("Can't configure libsensors")
+	}
+}
+
 func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (C.double, error) {
 	var val C.double
 	var err error
@@ -91,12 +98,7 @@ func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (C.dou
 }
 
 func Get() (*Sensors, error) {
-	cerr := C.sensors_init(nil)
-	if cerr != 0 {
-		panic("Can't configure libsensors")
-	}
-
-	sensors := &Sensors{Chips: make(map[string]*Chip)}
+	sensors := &Sensors{ChipsMap: make(map[string]*Chip)}
 
 	var chipno C.int = 0
 	for {
