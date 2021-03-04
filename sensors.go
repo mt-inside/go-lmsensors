@@ -53,7 +53,8 @@ const (
 )
 
 type Sensors struct {
-	Chips map[string]*Chip
+	ChipsList []*Chip
+	ChipsMap  map[string]*Chip
 }
 
 type Chip struct {
@@ -63,7 +64,8 @@ type Chip struct {
 	Address string
 	Adapter string
 
-	Readings map[string]Reading
+	ReadingsList []*Reading
+	ReadingsMap  map[string]*Reading
 }
 
 type Reading struct {
@@ -110,7 +112,7 @@ func Get() (*Sensors, error) {
 
 		adaptor := C.GoString(C.sensors_get_adapter_name(&cchip.bus))
 
-		chip := &Chip{ID: chipName, Adapter: adaptor, Readings: make(map[string]Reading)}
+		chip := &Chip{ID: chipName, Adapter: adaptor, ReadingsMap: make(map[string]*Reading)}
 		ords := strings.Split(chipName, "-")
 		chip.Type = ords[0]
 		chip.Bus = ords[1]
@@ -130,7 +132,7 @@ func Get() (*Sensors, error) {
 			}
 			label := C.GoString(clabel)
 
-			reading := Reading{Name: label, SensorType: sensorType}
+			reading := &Reading{Name: label, SensorType: sensorType}
 
 			switch sensorType {
 			case Temp:
@@ -169,9 +171,12 @@ func Get() (*Sensors, error) {
 				//TODO
 				reading.Alarm = false
 			}
-			chip.Readings[label] = reading
+			chip.ReadingsList = append(chip.ReadingsList, reading)
+			chip.ReadingsMap[reading.Name] = reading
+
 		}
-		sensors.Chips[chipName] = chip
+		sensors.ChipsList = append(sensors.ChipsList, chip)
+		sensors.ChipsMap[chip.ID] = chip
 	}
 
 	return sensors, nil
