@@ -1,11 +1,11 @@
-.PHONY: example
-example:
+.PHONY: example-basic
+example-basic:
 	go run examples/basic/main.go
 
-.PHONY: lint
-lint:
-	go fmt .
-	go vet .
-	golint .
-	golangci-lint run .
-	go test .
+.PHONY: check
+check:
+	build/check-go
+
+.PHONY: gen
+gen:
+	go generate ./...

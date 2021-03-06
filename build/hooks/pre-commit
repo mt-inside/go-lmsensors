@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+here="$(dirname "$(realpath "$(pwd -P)/${BASH_SOURCE[0]}")")"
+$here/../check-go
