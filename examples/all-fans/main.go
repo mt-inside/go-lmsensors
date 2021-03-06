@@ -22,7 +22,7 @@ forever:
 		}
 
 		for _, chip := range sensors.ChipsList {
-			for _, reading := range chip.ReadingsList {
+			for _, reading := range chip.SensorsList {
 				if reading.SensorType == lmsensors.Fan && reading.Value != "0rpm" {
 					fmt.Printf("%s: %s    ", reading.Name, reading.Value)
 				}

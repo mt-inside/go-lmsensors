@@ -1,5 +1,5 @@
 /*
- * golmsensors
+ * go-lmsensors
  *
  * Copyright (c) 2021 Matt Turner.
  */
@@ -19,6 +19,7 @@ import (
 )
 
 //go:generate stringer -type=SensorType
+// SensorType is the type of sensor (eg Temperature or Fan RPM)
 type SensorType int
 
 // https://github.com/lm-sensors/lm-sensors/blob/42f240d2a457834bcbdf4dc8b57237f97b5f5854/lib/sensors.h#L138
@@ -40,6 +41,7 @@ const (
 )
 
 //go:generate stringer -type=TempType
+// TempType is the type of temperature sensor (eg Thermistor or Diode)
 type TempType int
 
 // Not defined in a library header, but: https://github.com/lm-sensors/lm-sensors/blob/42f240d2a457834bcbdf4dc8b57237f97b5f5854/prog/sensors/chips.c#L407
@@ -53,11 +55,16 @@ const (
 	IntelPECI    TempType = 6 // Platform Environment Control Interface
 )
 
-type Sensors struct {
+// System contains all the chips, and all their sensors, in the system
+// Contains two views of the chips
+// * ChipsMap is indexed by the chips' IDs, for fast and easy access
+// * ChipsList allows enumerating the chips in a deterministic order
+type System struct {
 	ChipsList []*Chip
 	ChipsMap  map[string]*Chip
 }
 
+// Chip represents a hardware monitoring chip, which has one or more sensors attached, possibly of different types.
 type Chip struct {
 	ID      string
 	Type    string
@@ -65,11 +72,12 @@ type Chip struct {
 	Address string
 	Adapter string
 
-	ReadingsList []*Reading
-	ReadingsMap  map[string]*Reading
+	SensorsList []*Sensor
+	SensorsMap  map[string]*Sensor
 }
 
-type Reading struct {
+// Sensor represents one monitoring sensor, its type (temperature, voltage, etc), and its reading.
+type Sensor struct {
 	Name       string
 	SensorType SensorType
 	Value      string
@@ -97,8 +105,9 @@ func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float
 	return float64(val), nil
 }
 
-func Get(round bool, units bool) (*Sensors, error) {
-	sensors := &Sensors{ChipsMap: make(map[string]*Chip)}
+// Get fetches all the chips, all their sensors, and all their values.
+func Get(round bool, units bool) (*System, error) {
+	sensors := &System{ChipsMap: make(map[string]*Chip)}
 
 	var chipno C.int = 0
 	for {
@@ -114,7 +123,7 @@ func Get(round bool, units bool) (*Sensors, error) {
 
 		adaptor := C.GoString(C.sensors_get_adapter_name(&cchip.bus))
 
-		chip := &Chip{ID: chipName, Adapter: adaptor, ReadingsMap: make(map[string]*Reading)}
+		chip := &Chip{ID: chipName, Adapter: adaptor, SensorsMap: make(map[string]*Sensor)}
 		ords := strings.Split(chipName, "-")
 		chip.Type = ords[0]
 		chip.Bus = ords[1]
@@ -134,7 +143,7 @@ func Get(round bool, units bool) (*Sensors, error) {
 			}
 			label := C.GoString(clabel)
 
-			reading := &Reading{Name: label, SensorType: sensorType}
+			reading := &Sensor{Name: label, SensorType: sensorType}
 
 			switch sensorType {
 			case Temp:
@@ -194,8 +203,8 @@ func Get(round bool, units bool) (*Sensors, error) {
 				//TODO
 				reading.Alarm = false
 			}
-			chip.ReadingsList = append(chip.ReadingsList, reading)
-			chip.ReadingsMap[reading.Name] = reading
+			chip.SensorsList = append(chip.SensorsList, reading)
+			chip.SensorsMap[reading.Name] = reading
 
 		}
 		sensors.ChipsList = append(sensors.ChipsList, chip)
