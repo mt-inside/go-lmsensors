@@ -1,7 +1,10 @@
 # go-lmsensors
 Linux hardware sensor monitoring in Go.
 
-[![GoDoc](https://godoc.org/github.com/mt-inside/golmsensors?status.png)](http://godoc.org/github.com/mt-inside/golmsensors)
+[![Checks](https://github.com/mt-inside/go-lmsensors/actions/workflows/checks.yaml/badge.svg)](https://github.com/mt-inside/go-lmsensors/actions/workflows/checks.yaml)
+[![GitHub Issues](https://img.shields.io/github/issues-raw/mt-inside/go-lmsensors)](https://github.com/mt-inside/go-lmsensors/issues)
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/mt-inside/go-lmsensors.svg)](https://pkg.go.dev/github.com/mt-inside/go-lmsensors)
 
 Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitoring sensors) pacakge, on top of the [hwmon](https://hwmon.wiki.kernel.org) kernel feature.
 
