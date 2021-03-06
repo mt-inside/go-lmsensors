@@ -20,7 +20,7 @@ Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitorin
 ## How it works
 This package links against the C-language `libsensors` and calls it to get sensor readings from the hwmon kernel subsystem (which it reads from sysfs).
 
-My original version ran and parsed `sensors -j`, and all the information is in that JSON if you really squint and know how to read it.
+My original version ran and parsed `sensors -j`, as all the information is in that JSON if you really squint and know how to read it.
 However, using the library direct seemed faster, avoids a fork(), and doesn't require `lm-sensors` to be installed, just `libsensors5` (some package managers have them separately). (The instructions say to install lm-sensors, becuase you almost certainly want to run `sensors-detect`.)
 
 The hwmon data _are_ exposed through sysfs, but those are raw values - libsensors isn't just a convenience binding; it scales raw values according to a big built-in database, and lets the user rename sensors.
@@ -35,22 +35,21 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mt-inside/golmsensors"
+	"github.com/mt-inside/go-lmsensors"
 )
 
 func main() {
-	sensors, err := golmsensors.Get()
+	sensors, err := golmsensors.Get(true, true)
 	if err != nil {
 		log.Fatalf("Can't get sensor readings: %v", err)
 	}
 
-	for _, chip := range sensors.Chips {
+	for _, chip := range sensors.ChipsList {
 		fmt.Println(chip.ID)
-		for _, reading := range chip.Readings {
-			fmt.Printf("  [%s] %s: %f\n", reading.SensorType, reading.Name, reading.Value)
+		for _, reading := range chip.SensorsList {
+			fmt.Printf("  [%s] %s: %s\n", reading.SensorType, reading.Name, reading.Value)
 		}
 	}
-}
 ```
 
 ### Output
