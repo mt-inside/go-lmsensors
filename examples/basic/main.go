@@ -2,21 +2,23 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/mt-inside/golmsensors"
+	"github.com/mt-inside/go-lmsensors"
+	"github.com/mt-inside/go-usvc"
 )
 
 func main() {
-	sensors, err := golmsensors.Get()
+	log := usvc.GetLogger(false)
+
+	sensors, err := lmsensors.Get(true, true)
 	if err != nil {
-		log.Fatalf("Can't get sensor readings: %v", err)
+		log.Error(err, "Can't get sensor readings")
 	}
 
 	for _, chip := range sensors.ChipsList {
 		fmt.Println(chip.ID)
 		for _, reading := range chip.ReadingsList {
-			fmt.Printf("  [%s] %s: %f\n", reading.SensorType, reading.Name, reading.Value)
+			fmt.Printf("  [%s] %s: %s\n", reading.SensorType, reading.Name, reading.Value)
 		}
 	}
 }

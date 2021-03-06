@@ -1,5 +1,5 @@
-module github.com/mt-inside/golmsensors
+module github.com/mt-inside/go-lmsensors
 
-go 1.15
+go 1.16
 
-require github.com/mt-inside/logging v0.0.0-20210303193238-0d16d4354a91 // indirect
+require github.com/mt-inside/go-usvc v0.0.1

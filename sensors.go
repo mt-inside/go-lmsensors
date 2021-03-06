@@ -4,7 +4,7 @@
  * Copyright (c) 2021 Matt Turner.
  */
 
-package golmsensors
+package lmsensors
 
 // #include <sensors/sensors.h>
 // #include <sensors/error.h>
@@ -14,6 +14,7 @@ import "C"
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -71,7 +72,7 @@ type Chip struct {
 type Reading struct {
 	Name       string
 	SensorType SensorType
-	Value      float64
+	Value      string
 	Alarm      bool
 
 	// TODO: make a separate type with ^^ embedded, plus this, plus an interface over them.
@@ -85,19 +86,18 @@ func init() {
 	}
 }
 
-func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (C.double, error) {
+func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float64, error) {
 	var val C.double
-	var err error
 
 	cerr := C.sensors_get_value(chip, sf.number, &val)
 	if cerr != 0 {
-		err = fmt.Errorf("Can't read sensor value: chip=%v, subfeature=%v, error=%d", chip, sf, cerr)
+		return 0.0, fmt.Errorf("Can't read sensor value: chip=%v, subfeature=%v, error=%d", chip, sf, cerr)
 	}
 
-	return val, err
+	return float64(val), nil
 }
 
-func Get() (*Sensors, error) {
+func Get(round bool, units bool) (*Sensors, error) {
 	sensors := &Sensors{ChipsMap: make(map[string]*Chip)}
 
 	var chipno C.int = 0
@@ -140,14 +140,21 @@ func Get() (*Sensors, error) {
 			case Temp:
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_INPUT)
 				if sf != nil {
-					cvalue, _ := getValue(cchip, sf)
-					reading.Value = float64(cvalue)
+					value, _ := getValue(cchip, sf)
+					if round {
+						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
+					} else {
+						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
+					}
+					if units {
+						reading.Value += "°C"
+					}
 				}
 
 				sf = C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_TYPE)
 				if sf != nil {
-					cvalue, _ := getValue(cchip, sf)
-					reading.TempType = TempType(C.int(cvalue))
+					value, _ := getValue(cchip, sf)
+					reading.TempType = TempType(int(value))
 				}
 
 				//TODO
@@ -156,8 +163,15 @@ func Get() (*Sensors, error) {
 			case In:
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_IN_INPUT)
 				if sf != nil {
-					cvalue, _ := getValue(cchip, sf)
-					reading.Value = float64(cvalue)
+					value, _ := getValue(cchip, sf)
+					if round {
+						reading.Value = strconv.FormatFloat(value, 'f', 2, 64)
+					} else {
+						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
+					}
+					if units {
+						reading.Value += "V"
+					}
 				}
 
 				//TODO
@@ -166,8 +180,15 @@ func Get() (*Sensors, error) {
 			case Fan:
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_FAN_INPUT)
 				if sf != nil {
-					cvalue, _ := getValue(cchip, sf)
-					reading.Value = float64(cvalue)
+					value, _ := getValue(cchip, sf)
+					if round {
+						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
+					} else {
+						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
+					}
+					if units {
+						reading.Value += "rpm"
+					}
 				}
 
 				//TODO
