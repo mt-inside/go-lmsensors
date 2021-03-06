@@ -50,6 +50,7 @@ func main() {
 			fmt.Printf("  [%s] %s: %s\n", reading.SensorType, reading.Name, reading.Value)
 		}
 	}
+}
 ```
 
 ### Output
