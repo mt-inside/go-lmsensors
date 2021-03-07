@@ -14,7 +14,7 @@ Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitorin
   * Arch: `pacman -S lm_sensors`
 * Configure _lm-sensors_
   * Run `sensors-detect`
-  * Made any [necessary adjustments](https://hwmon.wiki.kernel.org/faq) to the [configuration](https://linux.die.net/man/5/sensors3.conf) in `/etc/sensors3.conf`, using `/etc/sensors.d/*`
+  * Make any [necessary adjustments](https://hwmon.wiki.kernel.org/faq) to the [configuration](https://linux.die.net/man/5/sensors3.conf) in `/etc/sensors3.conf`, using `/etc/sensors.d/*`
 * `go get github.com/mt-inside/go-lmsensors`
 
 ## How it works
