@@ -19,7 +19,7 @@ jobs:
           go-version: '^1.16.0'
 
       - name: Install C libraries
-        run: apt install libsensors-dev
+        run: sudo apt install libsensors-dev
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
