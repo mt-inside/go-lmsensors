@@ -80,6 +80,7 @@ type Chip struct {
 type Sensor struct {
 	Name       string
 	SensorType SensorType
+	Unit       string
 	Value      string
 	Alarm      bool
 
@@ -106,7 +107,7 @@ func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float
 }
 
 // Get fetches all the chips, all their sensors, and all their values.
-func Get(round bool, units bool) (*System, error) {
+func Get(round bool) (*System, error) {
 	sensors := &System{ChipsMap: make(map[string]*Chip)}
 
 	var chipno C.int = 0
@@ -147,6 +148,8 @@ func Get(round bool, units bool) (*System, error) {
 
 			switch sensorType {
 			case Temp:
+				reading.Unit = "°C"
+
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
@@ -154,9 +157,6 @@ func Get(round bool, units bool) (*System, error) {
 						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
 					} else {
 						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
-					}
-					if units {
-						reading.Value += "°C"
 					}
 				}
 
@@ -170,6 +170,8 @@ func Get(round bool, units bool) (*System, error) {
 				reading.Alarm = false
 
 			case In:
+				reading.Unit = "V"
+
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_IN_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
@@ -178,15 +180,14 @@ func Get(round bool, units bool) (*System, error) {
 					} else {
 						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
 					}
-					if units {
-						reading.Value += "V"
-					}
 				}
 
 				//TODO
 				reading.Alarm = false
 
 			case Fan:
+				reading.Unit = "/min"
+
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_FAN_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
@@ -194,9 +195,6 @@ func Get(round bool, units bool) (*System, error) {
 						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
 					} else {
 						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
-					}
-					if units {
-						reading.Value += "rpm"
 					}
 				}
 
