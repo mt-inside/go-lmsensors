@@ -18,7 +18,7 @@ Uses the [lm-sensors](https://github.com/lm-sensors/lm-sensors) (linux monitorin
 * `go get github.com/mt-inside/go-lmsensors`
 
 ## How it works
-This package links against the C-language `libsensors` and calls it to get sensor readings from the hwmon kernel subsystem (which it reads from sysfs).
+This module links against the C-language `libsensors` and calls it to get sensor readings from the hwmon kernel subsystem (which it reads from sysfs).
 
 My original version ran and parsed `sensors -j`, as all the information is in that JSON if you really squint and know how to read it.
 However, using the library direct seemed faster, avoids a fork(), and doesn't require `lm-sensors` to be installed, just `libsensors5` (some package managers have them separately). (The instructions say to install lm-sensors, becuase you almost certainly want to run `sensors-detect`.)
