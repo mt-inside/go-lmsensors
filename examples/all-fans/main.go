@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/mt-inside/go-lmsensors"
@@ -21,14 +22,15 @@ forever:
 			os.Exit(1)
 		}
 
+		var ss []string
 		for _, chip := range sensors.ChipsList {
 			for _, reading := range chip.SensorsList {
 				if reading.SensorType == lmsensors.Fan && reading.Value != 0.0 {
-					fmt.Printf("%s: %s    ", reading.Name, reading.Rendered)
+					ss = append(ss, fmt.Sprintf("%s: %s", reading.Name, reading.Rendered))
 				}
 			}
 		}
-		fmt.Printf("\r")
+		usvc.PrintUpdateLn(strings.Join(ss, "\t"))
 
 		select {
 		case <-signalCh:
