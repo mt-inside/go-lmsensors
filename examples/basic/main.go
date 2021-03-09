@@ -10,7 +10,7 @@ import (
 func main() {
 	log := usvc.GetLogger(false)
 
-	sensors, err := lmsensors.Get(true)
+	sensors, err := lmsensors.Get()
 	if err != nil {
 		log.Error(err, "Can't get sensor readings")
 	}
@@ -18,7 +18,7 @@ func main() {
 	for _, chip := range sensors.ChipsList {
 		fmt.Println(chip.ID)
 		for _, reading := range chip.SensorsList {
-			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.Value, reading.Unit)
+			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.Rendered, reading.Unit)
 		}
 	}
 }

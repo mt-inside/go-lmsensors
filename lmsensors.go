@@ -81,7 +81,8 @@ type Sensor struct {
 	Name       string
 	SensorType SensorType
 	Unit       string
-	Value      string
+	Value      float64
+	Rendered   string
 	Alarm      bool
 
 	// TODO: make a separate type with ^^ embedded, plus this, plus an interface over them.
@@ -107,7 +108,7 @@ func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float
 }
 
 // Get fetches all the chips, all their sensors, and all their values.
-func Get(round bool) (*System, error) {
+func Get() (*System, error) {
 	sensors := &System{ChipsMap: make(map[string]*Chip)}
 
 	var chipno C.int = 0
@@ -153,11 +154,8 @@ func Get(round bool) (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
-					if round {
-						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
-					} else {
-						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
-					}
+					reading.Value = value
+					reading.Rendered = strconv.FormatFloat(value, 'f', -1, 64)
 				}
 
 				sf = C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_TYPE)
@@ -175,11 +173,8 @@ func Get(round bool) (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_IN_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
-					if round {
-						reading.Value = strconv.FormatFloat(value, 'f', 2, 64)
-					} else {
-						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
-					}
+					reading.Rendered = strconv.FormatFloat(value, 'f', 2, 64)
+					reading.Value = value
 				}
 
 				//TODO
@@ -191,11 +186,8 @@ func Get(round bool) (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_FAN_INPUT)
 				if sf != nil {
 					value, _ := getValue(cchip, sf)
-					if round {
-						reading.Value = strconv.FormatFloat(value, 'f', 0, 64)
-					} else {
-						reading.Value = strconv.FormatFloat(value, 'f', -1, 64)
-					}
+					reading.Rendered = strconv.FormatFloat(value, 'f', 0, 64)
+					reading.Value = value
 				}
 
 				//TODO

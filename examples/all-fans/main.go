@@ -15,7 +15,7 @@ func main() {
 
 forever:
 	for {
-		sensors, err := lmsensors.Get(true)
+		sensors, err := lmsensors.Get()
 		if err != nil {
 			log.Error(err, "Can't get sensor readings")
 			os.Exit(1)
@@ -23,8 +23,8 @@ forever:
 
 		for _, chip := range sensors.ChipsList {
 			for _, reading := range chip.SensorsList {
-				if reading.SensorType == lmsensors.Fan && reading.Value != "0" {
-					fmt.Printf("%s: %s    ", reading.Name, reading.Value)
+				if reading.SensorType == lmsensors.Fan && reading.Value != 0.0 {
+					fmt.Printf("%s: %s    ", reading.Name, reading.Rendered)
 				}
 			}
 		}
