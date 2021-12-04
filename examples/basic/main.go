@@ -10,6 +10,10 @@ import (
 func main() {
 	log := usvc.GetLogger(false)
 
+	if err := lmsensors.Init(); err != nil {
+		panic(err)
+	}
+
 	sensors, err := lmsensors.Get()
 	if err != nil {
 		log.Error(err, "Can't get sensor readings")

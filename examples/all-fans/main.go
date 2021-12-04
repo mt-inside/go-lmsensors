@@ -14,7 +14,10 @@ func main() {
 	log := usvc.GetLogger(false)
 	signalCh := usvc.InstallSignalHandlers(log)
 
-forever:
+	if err := lmsensors.Init(); err != nil {
+		panic(err)
+	}
+
 	for {
 		sensors, err := lmsensors.Get()
 		if err != nil {
@@ -34,7 +37,7 @@ forever:
 
 		select {
 		case <-signalCh:
-			break forever
+			return
 		case <-time.After(1 * time.Second):
 			continue
 		}

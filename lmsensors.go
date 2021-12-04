@@ -12,6 +12,7 @@ package lmsensors
 import "C"
 
 import (
+	"errors"
 	"fmt"
 	"math"
 	"strconv"
@@ -89,11 +90,13 @@ type Sensor struct {
 	TempType TempType
 }
 
-func init() {
+// Init initialises the underlying lmsensors library, eg loading its database of sensor names and curves.
+func Init() error {
 	cerr := C.sensors_init(nil)
 	if cerr != 0 {
-		panic("Can't configure libsensors")
+		return errors.New("Can't configure libsensors")
 	}
+	return nil
 }
 
 func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float64, error) {
