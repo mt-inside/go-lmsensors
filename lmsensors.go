@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -58,7 +59,8 @@ const (
 
 // System contains all the chips, and all their sensors, in the system
 type System struct {
-	Chips map[string]*Chip
+	Chips          map[string]*Chip
+	ChipKeysSorted []string
 }
 
 // Chip represents a hardware monitoring chip, which has one or more sensors attached, possibly of different types.
@@ -69,7 +71,8 @@ type Chip struct {
 	Address string
 	Adapter string
 
-	Sensors map[string]*Sensor
+	Sensors          map[string]*Sensor
+	SensorKeysSorted []string
 }
 
 // Sensor represents one monitoring sensor, its type (temperature, voltage, etc), and its reading.
@@ -191,11 +194,16 @@ func Get() (*System, error) {
 				//TODO
 				reading.Alarm = false
 			}
-			chip.Sensors[reading.Name] = reading
 
+			chip.SensorKeysSorted = append(chip.SensorKeysSorted, reading.Name)
+			chip.Sensors[reading.Name] = reading
 		}
+		sort.Strings(chip.SensorKeysSorted)
+
+		sensors.ChipKeysSorted = append(sensors.ChipKeysSorted, chip.ID)
 		sensors.Chips[chip.ID] = chip
 	}
+	sort.Strings(sensors.ChipKeysSorted)
 
 	return sensors, nil
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 	"time"
 
@@ -28,12 +27,10 @@ func main() {
 
 		var ss []string
 
-		// This shows how to sort the bus and device maps to get a stable ordering over them.
-		// In this example programme we could actually have just sorted the output
-		for _, chipId := range sortedChipIds(system.Chips) {
+		for _, chipId := range system.ChipKeysSorted {
 			chip := system.Chips[chipId]
 
-			for _, s := range sortedSensorIds(chip.Sensors) {
+			for _, s := range chip.SensorKeysSorted {
 				reading := chip.Sensors[s]
 
 				if reading.SensorType == lmsensors.Fan && reading.Value != 0.0 {
@@ -51,21 +48,4 @@ func main() {
 			continue
 		}
 	}
-}
-
-func sortedChipIds(m map[string]*lmsensors.Chip) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	return keys
-}
-func sortedSensorIds(m map[string]*lmsensors.Sensor) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	return keys
 }
