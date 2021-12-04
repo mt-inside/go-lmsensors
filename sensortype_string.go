@@ -8,29 +8,29 @@ func _() {
 	// An "invalid array index" compiler error signifies that the constant values have changed.
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
-	_ = x[In-0]
+	_ = x[Voltage-0]
 	_ = x[Fan-1]
-	_ = x[Temp-2]
+	_ = x[Temperature-2]
 	_ = x[Power-3]
 	_ = x[Energy-4]
-	_ = x[Curr-5]
+	_ = x[Current-5]
 	_ = x[Humidity-6]
 	_ = x[VID-16]
-	_ = x[Intrustion-17]
+	_ = x[Intrusion-17]
 	_ = x[BeepEnable-24]
 	_ = x[Unhandled-2147483647]
 }
 
 const (
-	_SensorType_name_0 = "InFanTempPowerEnergyCurrHumidity"
-	_SensorType_name_1 = "VIDIntrustion"
+	_SensorType_name_0 = "VoltageFanTemperaturePowerEnergyCurrentHumidity"
+	_SensorType_name_1 = "VIDIntrusion"
 	_SensorType_name_2 = "BeepEnable"
 	_SensorType_name_3 = "Unhandled"
 )
 
 var (
-	_SensorType_index_0 = [...]uint8{0, 2, 5, 9, 14, 20, 24, 32}
-	_SensorType_index_1 = [...]uint8{0, 3, 13}
+	_SensorType_index_0 = [...]uint8{0, 7, 10, 21, 26, 32, 39, 47}
+	_SensorType_index_1 = [...]uint8{0, 3, 12}
 )
 
 func (i SensorType) String() string {

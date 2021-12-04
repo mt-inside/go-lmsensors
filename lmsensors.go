@@ -25,16 +25,16 @@ type SensorType int
 
 // https://github.com/lm-sensors/lm-sensors/blob/42f240d2a457834bcbdf4dc8b57237f97b5f5854/lib/sensors.h#L138
 const (
-	In       SensorType = 0x00
-	Fan      SensorType = 0x01
-	Temp     SensorType = 0x02
-	Power    SensorType = 0x03
-	Energy   SensorType = 0x04
-	Curr     SensorType = 0x05
-	Humidity SensorType = 0x06
+	Voltage     SensorType = 0x00
+	Fan         SensorType = 0x01
+	Temperature SensorType = 0x02
+	Power       SensorType = 0x03
+	Energy      SensorType = 0x04
+	Current     SensorType = 0x05
+	Humidity    SensorType = 0x06
 
-	VID        SensorType = 0x10
-	Intrustion SensorType = 0x11
+	VID       SensorType = 0x10
+	Intrusion SensorType = 0x11
 
 	BeepEnable SensorType = 0x18
 
@@ -146,7 +146,7 @@ func Get() (*System, error) {
 			reading := &Sensor{Name: label, SensorType: sensorType}
 
 			switch sensorType {
-			case Temp:
+			case Temperature:
 				reading.Unit = "°C"
 
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_INPUT)
@@ -165,7 +165,7 @@ func Get() (*System, error) {
 				//TODO
 				reading.Alarm = false
 
-			case In:
+			case Voltage:
 				reading.Unit = "V"
 
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_IN_INPUT)
