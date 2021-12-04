@@ -26,8 +26,8 @@ func main() {
 		}
 
 		var ss []string
-		for _, chip := range sensors.ChipsList {
-			for _, reading := range chip.SensorsList {
+		for _, chip := range sensors.Chips {
+			for _, reading := range chip.Sensors {
 				if reading.SensorType == lmsensors.Fan && reading.Value != 0.0 {
 					ss = append(ss, fmt.Sprintf("%s: %s", reading.Name, reading.Rendered))
 				}

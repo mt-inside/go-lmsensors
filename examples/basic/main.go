@@ -19,9 +19,9 @@ func main() {
 		log.Error(err, "Can't get sensor readings")
 	}
 
-	for _, chip := range sensors.ChipsList {
+	for _, chip := range sensors.Chips {
 		fmt.Println(chip.ID)
-		for _, reading := range chip.SensorsList {
+		for _, reading := range chip.Sensors {
 			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.Rendered, reading.Unit)
 		}
 	}

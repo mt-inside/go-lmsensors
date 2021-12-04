@@ -57,12 +57,8 @@ const (
 )
 
 // System contains all the chips, and all their sensors, in the system
-// Contains two views of the chips
-// * ChipsMap is indexed by the chips' IDs, for fast and easy access
-// * ChipsList allows enumerating the chips in a deterministic order
 type System struct {
-	ChipsList []*Chip
-	ChipsMap  map[string]*Chip
+	Chips map[string]*Chip
 }
 
 // Chip represents a hardware monitoring chip, which has one or more sensors attached, possibly of different types.
@@ -73,8 +69,7 @@ type Chip struct {
 	Address string
 	Adapter string
 
-	SensorsList []*Sensor
-	SensorsMap  map[string]*Sensor
+	Sensors map[string]*Sensor
 }
 
 // Sensor represents one monitoring sensor, its type (temperature, voltage, etc), and its reading.
@@ -112,7 +107,7 @@ func getValue(chip *C.sensors_chip_name, sf *C.struct_sensors_subfeature) (float
 
 // Get fetches all the chips, all their sensors, and all their values.
 func Get() (*System, error) {
-	sensors := &System{ChipsMap: make(map[string]*Chip)}
+	sensors := &System{Chips: map[string]*Chip{}}
 
 	var chipno C.int = 0
 	for {
@@ -128,7 +123,7 @@ func Get() (*System, error) {
 
 		adaptor := C.GoString(C.sensors_get_adapter_name(&cchip.bus))
 
-		chip := &Chip{ID: chipName, Adapter: adaptor, SensorsMap: make(map[string]*Sensor)}
+		chip := &Chip{ID: chipName, Adapter: adaptor, Sensors: map[string]*Sensor{}}
 		ords := strings.Split(chipName, "-")
 		chip.Type = ords[0]
 		chip.Bus = ords[1]
@@ -196,12 +191,10 @@ func Get() (*System, error) {
 				//TODO
 				reading.Alarm = false
 			}
-			chip.SensorsList = append(chip.SensorsList, reading)
-			chip.SensorsMap[reading.Name] = reading
+			chip.Sensors[reading.Name] = reading
 
 		}
-		sensors.ChipsList = append(sensors.ChipsList, chip)
-		sensors.ChipsMap[chip.ID] = chip
+		sensors.Chips[chip.ID] = chip
 	}
 
 	return sensors, nil
