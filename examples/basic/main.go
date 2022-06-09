@@ -22,7 +22,7 @@ func main() {
 	for _, chip := range sensors.Chips {
 		fmt.Println(chip.ID)
 		for _, reading := range chip.Sensors {
-			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.Rendered, reading.Unit)
+			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.String(), reading.Unit)
 		}
 	}
 }
