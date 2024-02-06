@@ -250,7 +250,7 @@ func Get() (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_INPUT)
 				if sf != nil {
 					value, err := getValue(cchip, sf)
-					if err != nil {
+					if err == nil {
 						reading = &TempSensor{baseSensor{label, value}, Unknown}
 					}
 				}
@@ -258,7 +258,7 @@ func Get() (*System, error) {
 				sf = C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_TEMP_TYPE)
 				if reading != nil && sf != nil {
 					value, err := getValue(cchip, sf)
-					if err != nil {
+					if err == nil {
 						(reading.(*TempSensor)).TempType = LmTempType(int(value))
 					}
 				}
@@ -267,7 +267,7 @@ func Get() (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_IN_INPUT)
 				if sf != nil {
 					value, err := getValue(cchip, sf)
-					if err != nil {
+					if err == nil {
 						reading = &VoltageSensor{baseSensor{label, value}}
 					}
 				}
@@ -276,7 +276,7 @@ func Get() (*System, error) {
 				sf := C.sensors_get_subfeature(cchip, feature, C.SENSORS_SUBFEATURE_FAN_INPUT)
 				if sf != nil {
 					value, err := getValue(cchip, sf)
-					if err != nil {
+					if err == nil {
 						reading = &FanSensor{baseSensor{label, value}}
 					}
 				}
