@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/mt-inside/go-lmsensors"
 	"github.com/mt-inside/go-usvc"
+
+	"github.com/mt-inside/go-lmsensors"
 )
 
 func main() {
@@ -20,9 +21,9 @@ func main() {
 	}
 
 	for _, chip := range sensors.Chips {
-		fmt.Println(chip.ID)
+		fmt.Println(chip.String())
 		for _, reading := range chip.Sensors {
-			fmt.Printf("  [%s] %s: %s%s\n", reading.SensorType, reading.Name, reading.String(), reading.Unit)
+			fmt.Println("  " + reading.String())
 		}
 	}
 }

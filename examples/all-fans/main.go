@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
-	"github.com/mt-inside/go-lmsensors"
 	"github.com/mt-inside/go-usvc"
+
+	"github.com/mt-inside/go-lmsensors"
 )
 
 func main() {
@@ -27,14 +28,26 @@ func main() {
 
 		var ss []string
 
-		for _, chipId := range system.ChipKeysSorted {
-			chip := system.Chips[chipId]
+		var chipIDs []string
+		for _, chip := range system.Chips {
+			chipIDs = append(chipIDs, chip.ID)
+		}
+		sort.Strings(chipIDs)
 
-			for _, s := range chip.SensorKeysSorted {
+		for _, chipID := range chipIDs {
+			chip := system.Chips[chipID]
+
+			var sensorNames []string
+			for _, sensor := range chip.Sensors {
+				sensorNames = append(sensorNames, sensor.GetName())
+			}
+			sort.Strings(sensorNames)
+
+			for _, s := range sensorNames {
 				reading := chip.Sensors[s]
 
-				if reading.SensorType == lmsensors.Fan && reading.Value != 0.0 {
-					ss = append(ss, fmt.Sprintf("%s: %s", reading.Name, reading.Rendered))
+				if fan, ok := reading.(*lmsensors.FanSensor); ok && fan.Value != 0.0 {
+					ss = append(ss, fan.String())
 				}
 			}
 		}
