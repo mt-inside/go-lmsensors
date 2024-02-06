@@ -105,7 +105,7 @@ type TempSensor struct {
 }
 
 func (s *TempSensor) Rendered() string {
-	return strconv.FormatFloat(s.Value, 'f', -1, 64)
+	return strconv.FormatFloat(s.Value, 'f', 0, 64)
 }
 
 func (s *TempSensor) Unit() string {
